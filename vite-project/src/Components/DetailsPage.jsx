@@ -16,6 +16,10 @@ const DetailsPage = () => {
 
   const [isSubmit, setIsSubmit] = useState(false);
 
+  // const [isEditMode, setIsEditMode] = useState(false);
+
+  // const [editIndex, setEditIndex] = useState(null);
+
   useEffect(() => {
     const fetchUserData = async (pinCode) => {
       try {
@@ -76,6 +80,8 @@ const DetailsPage = () => {
     });
   };
 
+  let editIndex = null;
+
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
@@ -89,8 +95,13 @@ const DetailsPage = () => {
       city: e.target.city.value,
     };
 
-    setSubmittedData((prevData) => [...prevData, renderData]);
-    setIsSubmit(true);
+    if (editIndex !== null) {
+      submittedData[editIndex] = renderData;
+      editIndex = null; 
+    } else {
+      setSubmittedData((prevData) => [...prevData, renderData]);
+      setIsSubmit(true);
+    }
 
     setFormData({
       firstName: "",
@@ -103,17 +114,19 @@ const DetailsPage = () => {
   };
 
   const handleEdit = (index) => {
-      const editedData = submittedData[index];
+    const editedData = submittedData[index];
 
-      setFormData({
-        firstName: editedData.firstName,
+    setFormData({
+      firstName: editedData.firstName,
       lastName: editedData.lastName,
       pincode: editedData.pincode,
       state: editedData.state,
       country: editedData.country,
       city: editedData.city,
-      })
-  }
+    });
+        
+    editIndex = index;
+  };
 
   return (
     <div>
