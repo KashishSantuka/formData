@@ -16,9 +16,11 @@ const DetailsPage = () => {
 
   const [isSubmit, setIsSubmit] = useState(false);
 
-  // const [isEditMode, setIsEditMode] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
 
-  // const [editIndex, setEditIndex] = useState(null);
+  const [editIndex, setEditIndex] = useState(null);
+
+
 
   useEffect(() => {
     const fetchUserData = async (pinCode) => {
@@ -80,38 +82,36 @@ const DetailsPage = () => {
     });
   };
 
-  let editIndex = null;
-
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
 
-    const renderData = {
-      firstName: e.target.firstName.value,
-      lastName: e.target.lastName.value,
-      pincode: e.target.pincode.value,
-      state: e.target.state.value,
-      country: e.target.country.value,
-      city: e.target.city.value,
-    };
-
-    if (editIndex !== null) {
-      submittedData[editIndex] = renderData;
-      editIndex = null; 
-    } else {
-      setSubmittedData((prevData) => [...prevData, renderData]);
-      setIsSubmit(true);
+    if (isEditMode && editIndex !== null) {
+      const updatedData = submittedData.map((data, index) =>
+        index === editIndex ? formData : data
+      );
+      setSubmittedData(updatedData); 
+      setIsEditMode(false);          
+            } else {
+      setSubmittedData([...submittedData, formData]);
+      setIsSubmit(true); 
     }
+   
 
     setFormData({
       firstName: "",
       lastName: "",
-      pincode: null,
       state: "",
       country: "",
       city: "",
     });
+
+    setPinCode("")
+
+
   };
+
+ 
 
   const handleEdit = (index) => {
     const editedData = submittedData[index];
@@ -124,8 +124,12 @@ const DetailsPage = () => {
       country: editedData.country,
       city: editedData.city,
     });
+
+    setPinCode(editedData.pincode)
         
-    editIndex = index;
+    setEditIndex(index);
+
+    setIsEditMode(true);
   };
 
   return (
@@ -214,7 +218,7 @@ const DetailsPage = () => {
             cursor: "pointer",
           }}
         >
-          Submit
+          {isEditMode ? "Update" : "Submit"}
         </button>
       </form>
 
