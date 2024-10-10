@@ -101,6 +101,7 @@ const DetailsPage = () => {
     setFormData({
       firstName: "",
       lastName: "",
+      pincode: "",
       state: "",
       country: "",
       city: "",
